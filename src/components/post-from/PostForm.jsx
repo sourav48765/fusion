@@ -4,6 +4,7 @@ import {Button, Input, Select, RTE, } from '../index'
 import appwriteService from "../../appwrite/config"
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { v4 as uuidv4} from 'uuid'
 
 
 export default function PostForm({post}) {
@@ -55,12 +56,13 @@ export default function PostForm({post}) {
     }
 
     const slugTransform = useCallback((value) => {
+        const uniqueString = uuidv4();
         if(value && typeof value === "string")
             return value
                 .trim()
                 .toLowerCase()
                 .replace(/[^a-zA-Z\d\s]+/g,'-')
-                .replace(/\s/g,'-')
+                .replace(/\s/g,'-') + '-' + uniqueString;
 
         return ''        
     }, [])
@@ -92,6 +94,7 @@ export default function PostForm({post}) {
                 label="Slug :"
                 placeholder="Slug"
                 className="mb-4"
+                readOnly
                 {...register("slug", { required: true })}
                 onInput={(e) => {
                     setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
